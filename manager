@@ -1,0 +1,348 @@
+#!/bin/bash
+function menu
+{
+	sl
+	clear
+	echo "------------------------START---------------------------"
+	echo "--------------------------------------------------------"
+	echo "Gdzie jestem: " `pwd`
+	echo "--------------------------------------------------------"
+	echo ""
+	if [ "$a" == "" ]
+	then
+		ls -1 --color=auto --file-type
+	else 
+		ls -l --color=auto
+	fi
+	echo ""
+	echo "-------------------------END----------------------------"
+	echo "--------------------------------------------------------"
+	echo "1. Przejdz     | 2. Zm. nazwy |3. Usun"
+	echo "4. Uprawnienia | 5. Dodaj     |6. Edycja"
+	echo "7. Tryb listy  | 0. Exit"
+	echo "--------------------------------------------------------"  
+	echo "Numer opcji:"
+	read o
+	case $o in 
+		1) przejdz     ;;
+		2) nazwa       ;;
+		3) usuwanie    ;;
+		4) uprawnienia ;;
+		5) dodawanie   ;;
+		6) edit	       ;;
+		7) if [ "$a" == 1 ]
+		   then
+	 	   	a=
+		   else
+		   	a=1
+		   fi
+		   menu        ;;
+		0) wyjscie     ;; 
+		*) echo "Brak opcji! (kliknij enter)" 
+		   read asdasdasd ;; 
+	esac
+	menu		
+}
+
+function przejdz
+{
+	echo "Nazwa katalogu?( .. = wstecz )"
+	read g
+	if [ "$g" == "" ]
+	then
+		menu
+	fi
+	if [ -e $g ];
+	then
+	cd $g
+	else
+	echo "BRAK ELEMENTU (Kliknij enter)"
+	read asdasd
+	fi 
+	menu
+}
+
+function nazwa
+{
+	echo "Podaj nazwe pliku do edycji: "
+	read nazwa
+	if [ "$nazwa" == "" ]
+	then 
+		menu
+	fi
+	if [ ! -e $nazwa ]
+	then
+		echo "Nie ma takiego pliku (kliknij enter)"
+		read asdasdasd
+		menu
+	fi
+	echo "Podaj nowa nazwe:"
+	read nowa
+	if [ "$nowa" == "" ]
+	then
+		menu
+	fi
+
+	if [ $nazwa == $nowa ]
+	then
+		echo "Podano ta sama nazwe! (kliknij enter)"
+		read asdasdasd
+		menu
+	fi
+	mv $nazwa $nowa
+	echo "Zmiana nazwy zakonczona sukcesem! (kilknij enter)"
+	read asdasdasdasd
+	menu
+}
+
+function usuwanie
+{
+       	echo "Podaj nazwe elementu do usuniecia: "
+        read nazwa
+        if [ "$nazwa" == "" ]
+	then
+		menu
+	fi
+	if [ -d $nazwa ]
+        then
+		cd $nazwa
+		if [ -e * ]
+		then 
+			cd ..
+			rm -r $nazwa
+			echo "Usuwanie zakonczone! (kilknij enter)"
+			read asdasdasd
+			menu
+		else
+			cd ..
+			rmdir $nazwa
+			echo "Usuwanie zakonczone! (kilknij enter)"
+        	        read asdasdasd
+        	        menu
+	        fi
+	fi
+	
+	if [ -e $nazwa ]
+	then
+		rm $nazwa
+		echo "Usuwanie zakonczone! (kilknij enter)"
+        	read asdasdasd
+        	menu
+	else
+        	echo "Brak takiego elementu! (kliknij enter)"
+        	read asdasdasd
+        	menu
+	fi
+}
+
+function dodawanie
+{
+echo "Katalog czy plik?(k/p)"
+read typ
+if [ "$typ" == "" ]
+then
+	menu
+fi
+if [ "$typ" == k ] || [ "$typ" == katalog ]
+then
+	echo "Podaj nazwe katalogu do stworzenia: (Bez spacji!)"
+	read nazwa
+	if [ "$nazwa" == ""]
+	then
+		menu
+	fi
+	mkdir $nazwa
+	echo "Tworzenie katalogu zakonczone! (Kliknij enter)"
+	read asdasdasd
+	menu
+else	
+	if [ "$typ" == p ] || [ "$typ" == plik ]
+	then
+	echo "Podaj nazwe pliku do stworzenia: (Bez spacji!)"
+        read nazwa
+        if [ "$nazwa" == "" ]
+	then
+		menu
+	fi
+	touch $nazwa
+        echo "Tworzenie pliku zakonczone! (Kliknij enter)"
+        read asdasdasd
+	fi
+        menu
+fi
+}
+
+function wyjscie
+{ 
+clear
+exit
+}
+
+function uprawnienia
+{
+	echo "Podaj nazwe elementu do edycji praw:"
+	read nazwa
+	if [ "$nazwa" == "" ]
+	then 
+		menu
+	fi
+	if [ -d $nazwa ]
+	then
+		echo "Obejmowac uprawnieniami pliki w katalogu?(y/n)"
+		read rrr
+		if [ "$nazwa" == "" ]
+		then
+			menu
+		fi
+
+		if [ $rrr == y ] || [$rrr == Y] || [ $rrr == yes ]
+		then
+			echo "Podaj uprawnienia dla wlasciciela(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+			read u 
+			echo "Podaj uprawnienia dla grupy(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                        read g
+			echo "Podaj uprawnienia dla pozostalych(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                        read o
+			chmod -R u=$u,g=$g,o=$o $nazwa
+			echo "Zmiana uprawnien zakonczona!(kliknij enter)"
+			read asdasdasd
+			menu
+		else
+			if [ $rrr == n ] || [ $rrr == N ] || [ $rrr == no ]
+			then
+                        echo "Podaj uprawnienia dla wlasciciela(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                        read u
+                        echo "Podaj uprawnienia dla grupy(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                        read g
+                        echo "Podaj uprawnienia dla pozostalych(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                        read o
+                        chmod u=$u,g=$g,o=$o $nazwa
+                        echo "Zmiana uprawnien zakonczona!(kliknij enter)"
+                        read asdasdasd
+                        menu
+			fi
+                fi
+	elif [ -e $nazwa ]
+	then
+		echo "Podaj uprawnienia dla wlasciciela(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                read u
+                echo "Podaj uprawnienia dla grupy(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                read g
+                echo "Podaj uprawnienia dla pozostalych(r=odczyt,w=zapis,x=wykonanie,bez uprawnien=kliknij enter)"
+                read o
+                chmod u=$u,g=$g,o=$o $nazwa
+                echo "Zmiana uprawnien zakonczona!(kliknij enter)"
+                read asdasdasd
+                menu
+        else
+		echo "Brak elementu w folderze!(kliknij enter)"
+		read asdasdasd
+		menu 
+ 	fi
+}
+
+function edit
+{
+echo "Podaj nazwe pliku do edycji: "
+read name
+if [ "$name" == "" ]
+then 
+	menu
+fi
+if [ ! -e $name ]
+then 
+	echo "No niestety nie ma takiego pliku!"
+else
+	clear
+	echo "Wybierz numer programu do edycji:"
+	echo "1. Vim"
+	echo "2. Nano"
+	echo "3. Other"
+	echo "4. Menu"
+	read o
+	case $o in 
+		1) vim $name ;;
+		2) nano $name;;
+		3)  	clear
+			echo "Podaj nazwe programu:"
+			read pro
+			$pro $name ;;
+		4) menu ;;
+		*) echo "zla opcja"
+		   menu;;
+	esac
+fi
+menu
+}
+menu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
