@@ -146,7 +146,7 @@ if [ "$typ" == k ] || [ "$typ" == katalog ]
 then
 	echo "Podaj nazwe katalogu do stworzenia: (Bez spacji!)"
 	read nazwa
-	if [ "$nazwa" == ""]
+	if [ "$nazwa" == "" ]
 	then
 		menu
 	fi
