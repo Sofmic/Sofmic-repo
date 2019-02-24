@@ -19,7 +19,7 @@ function menu
 	echo "1. Przejdz     | 2. Zm. nazwy |3. Usun"
 	echo "4. Uprawnienia | 5. Dodaj     |6. Edycja"
 	echo "7. Tryb listy  | 0. Exit"
-	echo "--------------------------------------------------------"  
+	echo "---------------------------------------------------------"  
 	echo "Numer opcji:"
 	read o
 	case $o in 
